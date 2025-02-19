@@ -48,7 +48,7 @@
     "next": "14.2.16",
     "next-themes": "^0.4.4",
     "react": "^18",
-    "react-day-picker": "8.10.1",
+    "react-datepicker": "latest",
     "react-dom": "^18",
     "react-hook-form": "^7.54.1",
     "react-resizable-panels": "^2.1.7",
@@ -57,8 +57,7 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.6",
-    "zod": "^3.24.1",
-    "react-datepicker": "latest"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^22",
