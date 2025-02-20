@@ -1,52 +1,24 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
+import { searchCities, type City } from "@/lib/api"
+import { useQuery } from "@tanstack/react-query"
 
-const cities = [
-  "New York",
-  "Los Angeles",
-  "Chicago",
-  "Houston",
-  "Phoenix",
-  "Philadelphia",
-  "San Antonio",
-  "San Diego",
-  "Dallas",
-  "San Jose",
-  "Austin",
-  "Jacksonville",
-  "San Francisco",
-  "Columbus",
-  "Fort Worth",
-  "Indianapolis",
-  "Charlotte",
-  "Seattle",
-  "Denver",
-  "Washington",
-  "Boston",
-  "El Paso",
-  "Detroit",
-  "Nashville",
-  "Portland",
-  "Memphis",
-  "Oklahoma City",
-  "Las Vegas",
-  "Louisville",
-  "Baltimore",
-]
+interface CitySearchProps {
+  onCitySelect: (city: City) => void
+}
 
-export default function CitySearch() {
+export default function CitySearch({ onCitySelect }: CitySearchProps) {
   const [input, setInput] = useState("")
-  const [suggestions, setSuggestions] = useState<string[]>([])
   const [isFocused, setIsFocused] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const filtered = cities.filter((city) => city.toLowerCase().startsWith(input.toLowerCase()))
-    setSuggestions(filtered)
-  }, [input])
+  const { data: cities = [], isLoading } = useQuery({
+    queryKey: ["cities", input],
+    queryFn: () => searchCities(input),
+    enabled: input.length >= 2,
+  })
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -65,8 +37,9 @@ export default function CitySearch() {
     setIsFocused(true)
   }
 
-  const handleSuggestionClick = (city: string) => {
-    setInput(city)
+  const handleCitySelect = (city: City) => {
+    setInput(`${city.name}, ${city.country}`)
+    onCitySelect(city)
     setIsFocused(false)
   }
 
@@ -79,22 +52,26 @@ export default function CitySearch() {
         placeholder="Search for a city"
         className="p-2 border rounded w-full"
         onFocus={() => setIsFocused(true)}
-        onBlur={() => setTimeout(() => setIsFocused(false), 200)}
       />
-      {isFocused && suggestions.length > 0 && (
+      {isFocused && input.length >= 2 && (
         <ul className="absolute z-10 w-full bg-white border rounded mt-1 max-h-60 overflow-auto">
-          {suggestions.map((city, index) => (
-            <li
-              key={index}
-              onMouseDown={() => handleSuggestionClick(city)}
-              className="p-2 hover:bg-gray-100 cursor-pointer"
-            >
-              {city}
-            </li>
-          ))}
+          {isLoading ? (
+            <li className="p-2">Loading...</li>
+          ) : cities.length > 0 ? (
+            cities.map((city) => (
+              <li
+                key={city.id}
+                onClick={() => handleCitySelect(city)}
+                className="p-2 hover:bg-gray-100 cursor-pointer"
+              >
+                {city.name}, {city.country}
+              </li>
+            ))
+          ) : (
+            <li className="p-2">No cities found</li>
+          )}
         </ul>
       )}
     </div>
   )
 }
-

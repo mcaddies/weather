@@ -1,16 +1,19 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
 import TableHeader from "./TableHeader"
 import TableRow from "./TableRow"
 import CalendarNavigation from "./CalendarNavigation"
+import type { City } from "@/lib/api"
 
 interface WeatherTableProps {
   startDate: Date | null
   endDate: Date | null
+  selectedCity: City | null
 }
 
-export default function WeatherTable({ startDate, endDate }: WeatherTableProps) {
+export default function WeatherTable({ startDate, endDate, selectedCity }: WeatherTableProps) {
   const [displayDates, setDisplayDates] = useState<Date[]>([])
   const currentYear = new Date().getFullYear()
   const years = Array.from({ length: 5 }, (_, i) => currentYear - i)
@@ -47,6 +50,10 @@ export default function WeatherTable({ startDate, endDate }: WeatherTableProps) 
     )
   }
 
+  if (!selectedCity) {
+    return <div className="text-xl">Please select a city</div>
+  }
+
   if (displayDates.length === 0) {
     return <div className="text-xl">Please select a date range</div>
   }
@@ -59,7 +66,12 @@ export default function WeatherTable({ startDate, endDate }: WeatherTableProps) 
           <TableHeader dates={displayDates} />
           <tbody>
             {years.map((year) => (
-              <TableRow key={year} year={year} dates={displayDates} />
+              <TableRow 
+                key={year} 
+                year={year} 
+                dates={displayDates} 
+                city={selectedCity}
+              />
             ))}
           </tbody>
         </table>
@@ -67,4 +79,3 @@ export default function WeatherTable({ startDate, endDate }: WeatherTableProps) 
     </div>
   )
 }
-
