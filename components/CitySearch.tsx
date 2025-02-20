@@ -52,8 +52,14 @@ export default function CitySearch({ onCitySelect }: CitySearchProps) {
     setIsFocused(false)
   }
 
+  const popularCities: City[] = [
+    { id: 1001, name: "Niseko", country: "Japan", latitude: 42.8048, longitude: 140.6874 },
+    { id: 1002, name: "Miami", country: "United States", latitude: 25.7617, longitude: -80.1918 },
+    { id: 1003, name: "Paris", country: "France", latitude: 48.8566, longitude: 2.3522 }
+  ];
+
   return (
-    <div ref={wrapperRef} className="relative">
+    <div ref={wrapperRef} className="relative space-y-2">
       <input
         type="text"
         value={input}
@@ -62,6 +68,17 @@ export default function CitySearch({ onCitySelect }: CitySearchProps) {
         className="p-2 border rounded w-full"
         onFocus={() => setIsFocused(true)}
       />
+      <div className="flex gap-2">
+        {popularCities.map((city) => (
+          <button
+            key={city.id}
+            onClick={() => handleCitySelect(city)}
+            className="px-4 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm transition-colors"
+          >
+            {city.name}
+          </button>
+        ))}
+      </div>
       {isFocused && input.length >= 2 && (
         <ul className="absolute z-10 w-full bg-white border rounded mt-1 max-h-60 overflow-auto">
           {isLoading ? (

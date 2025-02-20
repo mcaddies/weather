@@ -32,6 +32,8 @@ export default function TableRow({ year, dates, city }: TableRowProps) {
           <TableCell
             key={index}
             temperature={weather?.temperature ?? null}
+            tempMin={weather?.tempMin ?? null}
+            tempMax={weather?.tempMax ?? null}
             weather={weather?.weather ?? null}
             isLoading={query.isLoading}
           />

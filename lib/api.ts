@@ -48,6 +48,8 @@ export interface City {
 
 export interface WeatherData {
   temperature: number;
+  tempMin: number;
+  tempMax: number;
   weather: string;
   humidity: number;
   windSpeed: number;
@@ -108,7 +110,7 @@ export async function getHistoricalWeather(
           unitGroup: 'metric',
           include: 'days',
           contentType: 'json',
-          elements: 'datetime,temp,humidity,windspeed,conditions'
+          elements: 'datetime,temp,tempmin,tempmax,humidity,windspeed,conditions'
         }
       }
     );
@@ -118,6 +120,8 @@ export async function getHistoricalWeather(
 
     return {
       temperature: day.temp,
+      tempMin: day.tempmin,
+      tempMax: day.tempmax,
       weather,
       humidity: day.humidity,
       windSpeed: day.windspeed,

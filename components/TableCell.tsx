@@ -1,11 +1,15 @@
 interface TableCellProps {
   temperature: number | null
+  tempMin: number | null
+  tempMax: number | null
   weather: string | null
   isLoading?: boolean
 }
 
 export default function TableCell({
   temperature,
+  tempMin,
+  tempMax,
   weather,
   isLoading = false
 }: TableCellProps) {
@@ -39,11 +43,11 @@ export default function TableCell({
       case "fog":
         return "🌫️"
       default:
-        return "❓"
+        return "☀️"
     }
   }
 
-  if (!temperature || !weather) {
+  if (!temperature || !tempMin || !tempMax || !weather) {
     return (
       <td className="p-2 border text-center">
         <div className="text-gray-400">
@@ -55,9 +59,13 @@ export default function TableCell({
   }
 
   return (
-    <td className="p-2 border text-center">
+    <td className={`p-2 border text-center transition-colors`} style={{
+      backgroundColor: `rgba(${temperature < 20 ? '0,0,255' : '255,0,0'},${Math.min(Math.abs(temperature - 20) / 20, 1) * 0.3})`
+    }}>
       <div className="text-2xl mb-1">{getWeatherIcon(weather)}</div>
-      <div className="text-sm">{temperature.toFixed(1)}°C</div>
+      <div className="text-sm">
+        {Math.round(tempMin)}° to {Math.round(tempMax)}°C
+      </div>
     </td>
   )
 }
