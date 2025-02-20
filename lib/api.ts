@@ -66,7 +66,12 @@ export async function searchCities(query: string): Promise<City[]> {
       }
     });
 
-    return response.data.data.map((city: any) => ({
+    console.log('GeoDB API Response:', response.data);
+
+    // Check if response.data exists and has the expected structure
+    const cities = response.data?.data || [];
+    
+    return cities.map((city: any) => ({
       id: city.id,
       name: city.city,
       country: city.country,
@@ -74,7 +79,15 @@ export async function searchCities(query: string): Promise<City[]> {
       longitude: city.longitude
     }));
   } catch (error) {
-    console.error('Error searching cities:', error);
+    if (axios.isAxiosError(error)) {
+      console.error('GeoDB API Error:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+    } else {
+      console.error('Error searching cities:', error);
+    }
     return [];
   }
 }

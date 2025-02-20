@@ -14,11 +14,20 @@ export default function CitySearch({ onCitySelect }: CitySearchProps) {
   const [isFocused, setIsFocused] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
-  const { data: cities = [], isLoading } = useQuery({
+  const { data: cities = [], isLoading, error } = useQuery({
     queryKey: ["cities", input],
     queryFn: () => searchCities(input),
     enabled: input.length >= 2,
+    staleTime: 1000 * 60, // Cache results for 1 minute
+    retry: false // Don't retry on failure
   })
+
+  // Log any query errors
+  useEffect(() => {
+    if (error) {
+      console.error('City search query error:', error);
+    }
+  }, [error]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
